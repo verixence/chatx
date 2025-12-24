@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -11,11 +11,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default function SignupPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const plan = searchParams?.get("plan") || null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,7 +38,12 @@ export default function SignupPage() {
         return
       }
 
-      router.push("/login?registered=true")
+      // If plan is specified, redirect to Stripe checkout after login
+      if (plan && (plan === 'pro' || plan === 'enterprise')) {
+        router.push(`/login?registered=true&plan=${plan}`)
+      } else {
+        router.push("/login?registered=true")
+      }
     } catch (err) {
       setError("An error occurred. Please try again.")
     } finally {

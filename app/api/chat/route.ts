@@ -6,6 +6,8 @@ import { createRAGChain, vectorSemanticSearch } from "@/lib/ai/rag"
 import { getDefaultProvider } from "@/lib/ai/providers"
 import { moderateUserInput, moderateAIOutput, getSafeErrorMessage } from "@/lib/safety/moderation"
 import { logSafetyEvent } from "@/lib/safety/logging"
+import { isTrialExpired, getSubscriptionLimits } from "@/lib/subscriptions/subscription"
+import { canMakeAIRequest, incrementAIRequestCount } from "@/lib/db/usage-tracking"
 
 export async function POST(req: NextRequest) {
   try {
@@ -117,7 +119,42 @@ export async function POST(req: NextRequest) {
 
     // Get user's AI provider preference
     const user = await getUserById(session.user.id)
-    const provider = (user?.ai_provider as any) || getDefaultProvider()
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
+    }
+
+    // Check if trial has expired
+    if (user.subscription_status === 'trial' && isTrialExpired(user.subscription_status, user.subscription_end_date)) {
+      return NextResponse.json(
+        { 
+          error: 'Your 14-day free trial has ended. Please upgrade to Pro to continue using chat features.',
+          code: 'TRIAL_EXPIRED'
+        },
+        { status: 403 }
+      )
+    }
+
+    // Check daily AI request limit for freemium users
+    const subscriptionTier = (user.subscription as 'freemium' | 'pro' | 'enterprise') || 'freemium'
+    const limits = getSubscriptionLimits(subscriptionTier)
+    
+    if (limits.maxAIRequestsPerDay) {
+      const limitCheck = await canMakeAIRequest(session.user.id, subscriptionTier, limits.maxAIRequestsPerDay)
+      
+      if (!limitCheck.allowed) {
+        return NextResponse.json(
+          {
+            error: limitCheck.reason || 'Daily AI request limit reached',
+            code: 'DAILY_LIMIT_EXCEEDED',
+            current: limitCheck.current,
+            limit: limitCheck.limit,
+          },
+          { status: 403 }
+        )
+      }
+    }
+
+    const provider = (user.ai_provider as any) || getDefaultProvider()
 
     // Load chat history for conversation context
     const { getChatMessages } = await import("@/lib/db/queries")
@@ -179,6 +216,12 @@ export async function POST(req: NextRequest) {
 
     // Use sanitized answer if available
     const sanitizedAnswer = outputModeration.sanitized || answer
+
+    // Increment AI request count for usage tracking
+    await incrementAIRequestCount(session.user.id).catch((err) => {
+      console.warn("Failed to increment AI request count:", err)
+      // Don't fail the request if usage tracking fails
+    })
 
     // Store messages in chat_messages table (primary storage)
     // Also update session.messages as fallback for backward compatibility

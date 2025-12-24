@@ -1,19 +1,33 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
 import { Settings, User, Zap } from "lucide-react"
+import SubscriptionManagement from "./SubscriptionManagement"
 
 interface SettingsInterfaceProps {
   user: any
+  searchParams?: { success?: string; canceled?: string; session_id?: string }
 }
 
-export default function SettingsInterface({ user }: SettingsInterfaceProps) {
+export default function SettingsInterface({ user, searchParams }: SettingsInterfaceProps) {
   const [aiProvider, setAiProvider] = useState(user?.aiProvider || "openai")
   const [saving, setSaving] = useState(false)
+
+  // Handle Stripe checkout success/cancel messages
+  useEffect(() => {
+    if (searchParams?.success === 'true') {
+      alert("Payment successful! Your subscription has been activated.")
+      // Refresh subscription info
+      window.history.replaceState({}, '', '/dashboard/settings')
+    } else if (searchParams?.canceled === 'true') {
+      // User canceled - silently clear URL, no need to alert
+      window.history.replaceState({}, '', '/dashboard/settings')
+    }
+  }, [searchParams])
 
   const handleSave = async () => {
     setSaving(true)
@@ -57,17 +71,11 @@ export default function SettingsInterface({ user }: SettingsInterfaceProps) {
             <Label>Email</Label>
             <p className="text-sm text-muted-foreground">{user?.email}</p>
           </div>
-          <div>
-            <Label>Subscription</Label>
-            <p className="text-sm font-medium capitalize">{user?.subscription || "Free"}</p>
-            {user?.subscription === "freemium" && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Upgrade to Pro for unlimited features
-              </p>
-            )}
-          </div>
         </CardContent>
       </Card>
+
+      {/* Subscription Management */}
+      <SubscriptionManagement user={user} />
 
       <Card>
         <CardHeader>

@@ -14,7 +14,7 @@ import {
   getWorkspaceById,
   getUserContentCount,
 } from "@/lib/db/queries"
-import { canAddContent } from "@/lib/subscriptions/subscription"
+import { canAddContent, isTrialExpired } from "@/lib/subscriptions/subscription"
 import { supabaseAdmin } from "@/lib/db/supabase"
 import { initializeBucket } from "@/lib/storage/supabase"
 
@@ -412,6 +412,17 @@ export async function POST(req: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
+    }
+
+    // Check if trial has expired
+    if (user.subscription_status === 'trial' && isTrialExpired(user.subscription_status, user.subscription_end_date)) {
+      return NextResponse.json(
+        { 
+          error: 'Your 14-day free trial has ended. Please upgrade to Pro to continue using the service.',
+          code: 'TRIAL_EXPIRED',
+        },
+        { status: 403 }
+      )
     }
 
     // Check subscription limits before processing

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       console.error("Missing Supabase environment variables")
       return NextResponse.json(
-        { error: "Server configuration error. Please contact support." },
+        { error: "Server configuration error. Please contact us at info@verixence.com" },
         { status: 500 }
       )
     }

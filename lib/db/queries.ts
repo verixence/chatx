@@ -39,17 +39,27 @@ export async function createUser(userData: {
   password_hash?: string
 }): Promise<User | null> {
   try {
+    const now = new Date()
+    const subscription = userData.subscription || 'freemium'
+    
+    // For freemium users, set up 14-day free trial
+    const isFreemium = subscription === 'freemium'
+    const trialEndDate = isFreemium 
+      ? new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000) // 14 days from now
+      : null
+
     const insertData: any = {
       email: userData.email,
-      subscription: userData.subscription || 'freemium',
+      subscription,
       ai_provider: userData.ai_provider || 'openai',
       usage_limits: { 
         uploadsToday: 0, 
         uploadsLimit: 3, 
-        lastReset: new Date().toISOString() 
+        lastReset: now.toISOString()
       },
-      subscription_status: 'active',
-      subscription_start_date: new Date().toISOString(),
+      subscription_status: isFreemium ? 'trial' : 'active',
+      subscription_start_date: now.toISOString(),
+      subscription_end_date: trialEndDate?.toISOString() || null,
       content_count: 0,
     }
     
@@ -118,6 +128,65 @@ export async function updateUser(id: string, updates: Partial<User>): Promise<Us
     return null
   }
   return data as User
+}
+
+// Subscription management functions
+export async function updateUserSubscription(
+  userId: string, 
+  subscription: 'freemium' | 'pro' | 'enterprise',
+  options?: {
+    subscription_status?: 'active' | 'cancelled' | 'expired' | 'trial'
+    stripe_customer_id?: string
+    stripe_subscription_id?: string
+  }
+): Promise<User | null> {
+  const now = new Date().toISOString()
+  const updates: Partial<User> = {
+    subscription,
+    subscription_status: options?.subscription_status || 'active',
+    subscription_start_date: now,
+    updated_at: now,
+  }
+
+  if (options?.stripe_customer_id) {
+    updates.stripe_customer_id = options.stripe_customer_id
+  }
+  if (options?.stripe_subscription_id) {
+    updates.stripe_subscription_id = options.stripe_subscription_id
+  }
+
+  // Update subscription history
+  const { error: historyError } = await supabaseAdmin
+    .from('subscription_history')
+    .insert({
+      user_id: userId,
+      subscription_type: subscription,
+      status: options?.subscription_status || 'active',
+      started_at: now,
+      stripe_subscription_id: options?.stripe_subscription_id || null,
+    })
+
+  if (historyError) {
+    console.error('Error updating subscription history:', historyError)
+    // Continue even if history update fails
+  }
+
+  return updateUser(userId, updates)
+}
+
+export async function getSubscriptionHistory(userId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('subscription_history')
+    .select('*')
+    .eq('user_id', userId)
+    .order('started_at', { ascending: false })
+    .limit(10)
+
+  if (error) {
+    console.error('Error fetching subscription history:', error)
+    return []
+  }
+  return data || []
 }
 
 // Workspace queries

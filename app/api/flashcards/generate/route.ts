@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth/config"
 import { getWorkspaceById, getContentsByWorkspaceId, getContentById, getUserById, createFlashcard } from "@/lib/db/queries"
 import { createFlashcardGenerationChain } from "@/lib/ai/chains"
 import { getDefaultProvider } from "@/lib/ai/providers"
+import { hasFeatureAccess, isTrialExpired } from "@/lib/subscriptions/subscription"
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,8 +61,35 @@ export async function POST(req: NextRequest) {
 
     // Get user's AI provider preference
     const user = await getUserById(session.user.id)
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
+    }
 
-    const provider = (user?.ai_provider as any) || getDefaultProvider()
+    // Check if trial has expired
+    if (user.subscription_status === 'trial' && isTrialExpired(user.subscription_status, user.subscription_end_date)) {
+      return NextResponse.json(
+        { 
+          error: 'Your 14-day free trial has ended. Please upgrade to Pro to continue using flashcards.',
+          code: 'TRIAL_EXPIRED'
+        },
+        { status: 403 }
+      )
+    }
+
+    // Check subscription feature access
+    const subscriptionTier = (user.subscription as 'freemium' | 'pro' | 'enterprise') || 'freemium'
+    
+    if (!hasFeatureAccess(subscriptionTier, 'flashcards')) {
+      return NextResponse.json(
+        { 
+          error: 'Flashcard generation is not available for your subscription tier. Upgrade to Pro for unlimited flashcards.',
+          code: 'FEATURE_NOT_AVAILABLE'
+        },
+        { status: 403 }
+      )
+    }
+
+    const provider = (user.ai_provider as any) || getDefaultProvider()
 
     // Generate flashcards
     const flashcardPairs = await createFlashcardGenerationChain(

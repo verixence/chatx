@@ -124,3 +124,61 @@ export function getSubscriptionPricing(tier: SubscriptionTier): { monthly?: numb
   return pricing[tier] || pricing.freemium
 }
 
+/**
+ * Check if trial is active
+ */
+export function isTrialActive(status: string | null | undefined, endDate: string | null | undefined): boolean {
+  if (status !== 'trial') return false
+  if (!endDate) return false
+  
+  const now = new Date()
+  const trialEnd = new Date(endDate)
+  return trialEnd > now
+}
+
+/**
+ * Get trial days remaining
+ */
+export function getTrialDaysRemaining(endDate: string | null | undefined): number | null {
+  if (!endDate) return null
+  
+  const now = new Date()
+  const trialEnd = new Date(endDate)
+  const diffTime = trialEnd.getTime() - now.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  
+  return Math.max(0, diffDays)
+}
+
+/**
+ * Check if trial has expired
+ */
+export function isTrialExpired(status: string | null | undefined, endDate: string | null | undefined): boolean {
+  if (status !== 'trial') return false
+  if (!endDate) return false
+  
+  const now = new Date()
+  const trialEnd = new Date(endDate)
+  return trialEnd <= now
+}
+
+/**
+ * Check if subscription has expired (including grace period)
+ */
+export function isSubscriptionExpired(
+  status: string | null | undefined, 
+  endDate: string | null | undefined
+): boolean {
+  if (!status || status === 'trial') return false // Trial handled separately
+  if (!endDate) return false
+  
+  const now = new Date()
+  const subscriptionEnd = new Date(endDate)
+  
+  // If status is expired, always return true
+  if (status === 'expired') return true
+  
+  // Check if end date has passed (includes grace period)
+  return subscriptionEnd <= now
+}
+
