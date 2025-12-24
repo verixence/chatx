@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Check, Crown, Zap, Building2, ArrowUp, AlertCircle, Clock } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Check, Crown, Zap, Building2, ArrowUp, AlertCircle, Clock, Mail } from "lucide-react"
 import { getSubscriptionPricing, getSubscriptionDisplayName, type SubscriptionTier } from "@/lib/subscriptions/subscription"
 import Link from "next/link"
 
@@ -56,6 +57,10 @@ export default function SubscriptionManagement({ user, upgradePlan }: Subscripti
   const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [upgrading, setUpgrading] = useState(false)
+  const [showStripeDialog, setShowStripeDialog] = useState(false)
+  const [stripeDialogMessage, setStripeDialogMessage] = useState("")
+  const [stripeDialogTitle, setStripeDialogTitle] = useState("Payment Processing Not Available")
+  const [isStripeError, setIsStripeError] = useState(true)
   const subscriptionSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -84,7 +89,7 @@ export default function SubscriptionManagement({ user, upgradePlan }: Subscripti
         }, 500)
       }, 300)
       // Clean up URL parameter
-      window.history.replaceState({}, '', '/dashboard/settings')
+      window.history.replaceState({}, '', '/settings')
     }
   }, [upgradePlan])
 
@@ -126,9 +131,12 @@ export default function SubscriptionManagement({ user, upgradePlan }: Subscripti
         if (!response.ok) {
           const error = await response.json()
           
-          // If Stripe is not configured, show helpful message
+          // If Stripe is not configured, show beautiful dialog
           if (error.code === 'STRIPE_NOT_CONFIGURED') {
-            alert(`Payment processing is not yet configured. To upgrade to ${getSubscriptionDisplayName(newTier)}, please contact us at info@verixence.com`)
+            setStripeDialogTitle("Payment Processing Not Available")
+            setStripeDialogMessage(`To upgrade to ${getSubscriptionDisplayName(newTier)}, please contact us at info@verixence.com`)
+            setIsStripeError(true)
+            setShowStripeDialog(true)
             return
           }
           
@@ -153,13 +161,19 @@ export default function SubscriptionManagement({ user, upgradePlan }: Subscripti
 
         if (response.ok) {
           await fetchSubscriptionInfo()
-          alert("Subscription updated successfully!")
+          setStripeDialogTitle("Success")
+          setStripeDialogMessage("Subscription updated successfully!")
+          setIsStripeError(false)
+          setShowStripeDialog(true)
         } else {
           throw new Error("Failed to update subscription")
         }
       }
     } catch (error: any) {
-      alert(error.message || "Failed to update subscription")
+      setStripeDialogTitle("Error")
+      setStripeDialogMessage(error.message || "Failed to update subscription")
+      setIsStripeError(true)
+      setShowStripeDialog(true)
     } finally {
       setUpgrading(false)
     }
@@ -536,6 +550,45 @@ export default function SubscriptionManagement({ user, upgradePlan }: Subscripti
           </CardContent>
         </Card>
       )}
+
+      {/* Stripe Not Configured / Success Dialog */}
+      <Dialog open={showStripeDialog} onOpenChange={setShowStripeDialog}>
+        <DialogContent className="bg-white border border-black/10 shadow-xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-black flex items-center gap-2">
+              {isStripeError ? (
+                <Mail className="h-5 w-5 text-[#EFA07F]" />
+              ) : (
+                <Check className="h-5 w-5 text-green-600" />
+              )}
+              {stripeDialogTitle}
+            </DialogTitle>
+            <DialogDescription className="text-black/70 pt-2">
+              {stripeDialogMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 flex flex-col gap-3">
+            {isStripeError && (
+              <div className="bg-[#F9E5DD]/50 rounded-lg p-4 border border-[#EFA07F]/30">
+                <p className="text-sm text-black/80 mb-2 font-medium">Contact us to upgrade:</p>
+                <a 
+                  href="mailto:info@verixence.com" 
+                  className="text-[#EFA07F] hover:text-[#EFA07F]/80 font-semibold text-sm flex items-center gap-2"
+                >
+                  <Mail className="h-4 w-4" />
+                  info@verixence.com
+                </a>
+              </div>
+            )}
+            <Button
+              onClick={() => setShowStripeDialog(false)}
+              className="w-full bg-[#EFA07F] hover:bg-[#EFA07F]/90 text-black"
+            >
+              {isStripeError ? "Close" : "Got it"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

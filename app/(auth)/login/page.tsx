@@ -36,7 +36,7 @@ export default function LoginPage() {
       } else {
         // If plan is specified, redirect to checkout
         if (plan && (plan === 'pro' || plan === 'enterprise')) {
-          router.push(`/dashboard/settings?upgrade=${plan}`)
+          router.push(`/settings?upgrade=${plan}`)
         } else {
           router.push("/dashboard")
         }

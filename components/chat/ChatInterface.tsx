@@ -7,6 +7,7 @@ import { Send, Bot, Zap, Network, Search, Activity, BookOpen, Mic } from "lucide
 import { cn } from "@/lib/utils/cn"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import SummaryPreview from "@/components/ui/SummaryPreview"
 
 interface Message {
   role: "user" | "assistant"
@@ -30,6 +31,8 @@ interface ChatInterfaceProps {
   onExternalMessageSent?: () => void // Callback when external message is sent
   setInputValue?: string | null // When set, fills the input field (doesn't send)
   onInputValueSet?: () => void // Callback when input value is set
+  summaryPreview?: string | null // Optional summary to show as preview at top
+  onViewFullSummary?: () => void // Callback when user wants to view full summary
 }
 
 export default function ChatInterface({
@@ -46,6 +49,8 @@ export default function ChatInterface({
   onExternalMessageSent,
   setInputValue,
   onInputValueSet,
+  summaryPreview,
+  onViewFullSummary,
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [input, setInput] = useState("")
@@ -658,6 +663,16 @@ export default function ChatInterface({
           scrollBehavior: "smooth"
         }}
       >
+        {/* Summary Preview - Show at top when available and no messages yet */}
+        {messages.length === 0 && summaryPreview && (
+          <div className="max-w-3xl mx-auto mb-6">
+            <SummaryPreview 
+              summary={summaryPreview} 
+              onViewFull={onViewFullSummary}
+            />
+          </div>
+        )}
+        
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full py-12">
             <div className="text-center space-y-4 px-4 max-w-2xl">
@@ -669,12 +684,12 @@ export default function ChatInterface({
                 </p>
               )}
               {/* Quick Action Buttons */}
-              <div className="flex flex-wrap gap-2 justify-center mt-6">
+              <div className="flex flex-wrap gap-2 sm:gap-2.5 justify-center mt-6 sm:mt-8">
                 {getQuickActions().slice(0, 4).map((action, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleSuggestedQuestion(action)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 hover:border-gray-400 transition-colors shadow-sm"
+                    className="px-4 py-2.5 sm:px-5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full hover:bg-gradient-to-r hover:from-[#EFA07F]/5 hover:to-[#EFA07F]/10 hover:border-[#EFA07F]/30 hover:text-gray-900 transition-all duration-200 shadow-sm hover:shadow-md min-h-[44px] touch-manipulation"
                   >
                     {action}
                   </button>
@@ -733,12 +748,12 @@ export default function ChatInterface({
                     </div>
                     {/* Suggested Questions for Assistant Messages */}
                     {message.role === "assistant" && idx === messages.length - 1 && !loading && (
-                      <div className="flex flex-wrap gap-2 mt-1">
+                      <div className="flex flex-wrap gap-2 mt-2">
                         {generateSuggestedQuestions(message.content, contentType).map((suggestion, sugIdx) => (
                           <button
                             key={sugIdx}
                             onClick={() => handleSuggestedQuestion(suggestion)}
-                            className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-full hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900 transition-all shadow-sm"
+                            className="px-3.5 py-2 text-xs sm:text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-full hover:bg-gradient-to-r hover:from-[#EFA07F]/5 hover:to-[#EFA07F]/10 hover:border-[#EFA07F]/30 hover:text-gray-900 transition-all duration-200 shadow-sm hover:shadow min-h-[36px] sm:min-h-[32px] touch-manipulation"
                           >
                             {suggestion}
                           </button>

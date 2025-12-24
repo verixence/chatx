@@ -24,14 +24,14 @@ export default function HomePage() {
       {/* Content */}
       <div className="relative z-10">
         {/* Floating Action Buttons */}
-        <div className="fixed top-6 right-6 z-50 flex flex-col gap-3">
+        <div className="fixed top-4 right-2 sm:top-6 sm:right-6 z-50 flex flex-col gap-2 sm:gap-3">
           <Link href="/login">
-            <Button className="bg-white/90 backdrop-blur-md hover:bg-white text-black text-base font-medium px-6 py-3 rounded-full border border-black/10 shadow-lg">
+            <Button className="bg-white/90 backdrop-blur-md hover:bg-white text-black text-sm sm:text-base font-medium px-4 py-2.5 sm:px-6 sm:py-3 rounded-full border border-black/10 shadow-lg min-h-[44px] touch-manipulation">
               Sign in
             </Button>
           </Link>
           <Link href="/signup">
-            <Button className="bg-[#EFA07F] hover:bg-[#EFA07F]/90 text-black text-base font-medium px-6 py-3 rounded-full border-0 shadow-lg">
+            <Button className="bg-[#EFA07F] hover:bg-[#EFA07F]/90 text-black text-sm sm:text-base font-medium px-4 py-2.5 sm:px-6 sm:py-3 rounded-full border-0 shadow-lg min-h-[44px] touch-manipulation">
               Get started
             </Button>
           </Link>

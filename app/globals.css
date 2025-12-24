@@ -56,6 +56,29 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Ensure images are responsive by default */
+  img {
+    @apply max-w-full h-auto;
+  }
+  /* Prevent horizontal scroll on small screens */
+  html {
+    @apply overflow-x-hidden;
+  }
+  body {
+    @apply overflow-x-hidden;
+  }
+  /* Better touch targets for mobile */
+  button, a, [role="button"] {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  /* Ensure text is readable on all screens */
+  body {
+    @apply text-base;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
 }
 
 @keyframes float {

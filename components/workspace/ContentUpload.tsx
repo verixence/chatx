@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Youtube, Clipboard } from "lucide-react"
+import LoadingScreen from "@/components/ui/LoadingScreen"
 // Removed supabaseBrowser import - using server-side upload endpoint instead
 
 interface ContentUploadProps {
@@ -304,12 +305,10 @@ export default function ContentUpload({ workspaceId, onClose, initialType, onUpl
         }
       `}</style>
       {loading ? (
-        <div className="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 border-4 border-[#1e3a8a] border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-lg font-medium text-gray-900">Uploading...</p>
-          </div>
-        </div>
+        <LoadingScreen 
+          message={processingStatus || undefined}
+          stage={uploadProgress > 0 && uploadProgress < 100 ? "uploading" : uploadProgress === 100 ? "processing" : undefined}
+        />
       ) : (
         <Dialog open={true} onOpenChange={onClose}>
           <DialogContent className={type === "youtube" ? "max-w-lg" : type === "text" ? "max-w-2xl" : "max-w-2xl"}>
@@ -347,7 +346,7 @@ export default function ContentUpload({ workspaceId, onClose, initialType, onUpl
               )}
 
               <div className="flex justify-end">
-                <Button type="submit" disabled={loading} className="w-full sm:w-auto min-w-[120px]">
+                <Button type="submit" disabled={loading} className="w-full sm:w-auto min-w-[120px] min-h-[44px] touch-manipulation">
                   Add
                 </Button>
               </div>
@@ -384,7 +383,7 @@ export default function ContentUpload({ workspaceId, onClose, initialType, onUpl
               )}
 
               <div className="flex justify-end">
-                <Button type="submit" disabled={loading} className="w-full sm:w-auto min-w-[120px]">
+                <Button type="submit" disabled={loading} className="w-full sm:w-auto min-w-[120px] min-h-[44px] touch-manipulation">
                   Add
                 </Button>
               </div>

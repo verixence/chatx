@@ -14,7 +14,7 @@ const ContentUpload = dynamic(() => import("@/components/workspace/ContentUpload
   loading: () => null,
 })
 import RecentsSection from "@/components/workspace/RecentsSection"
-import TrialStatusBanner from "./TrialStatusBanner"
+import TrialStatusBadge from "./TrialStatusBadge"
 
 interface Content {
   id: string
@@ -100,12 +100,12 @@ export default function DashboardContent({ contents, userId, defaultWorkspaceId 
 
   return (
     <div className="min-h-screen">
+      {/* Trial Status Badge - Fixed in top right corner */}
+      <TrialStatusBadge />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        {/* Trial/Usage Status Banner */}
-        <TrialStatusBanner />
-
         {/* What do you want to learn? Section */}
-        <div className="text-center mb-12 sm:mb-16">
+        <div className="text-center mb-12 sm:mb-16 pt-16 sm:pt-20 md:pt-24">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-4 sm:mb-6">
             What do you want to learn?
           </h1>

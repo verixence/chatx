@@ -17,15 +17,15 @@ export default function SettingsInterface({ user, searchParams }: SettingsInterf
     if (searchParams?.success === 'true') {
       alert("Payment successful! Your subscription has been activated.")
       // Refresh subscription info
-      window.history.replaceState({}, '', '/dashboard/settings')
+      window.history.replaceState({}, '', '/settings')
     } else if (searchParams?.canceled === 'true') {
       // User canceled - silently clear URL, no need to alert
-      window.history.replaceState({}, '', '/dashboard/settings')
+      window.history.replaceState({}, '', '/settings')
     }
   }, [searchParams])
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-6">
+      return (
+        <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-6">
       <div>
         <h1 className="text-3xl font-bold">Settings</h1>
         <p className="text-muted-foreground mt-2">

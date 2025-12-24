@@ -14,7 +14,7 @@ export default function DashboardNav() {
 
   const navItems: Array<{ href: string; label: string; icon: any }> = [
     {
-      href: "/dashboard/settings",
+      href: "/settings",
       label: "Settings",
       icon: Settings,
     },

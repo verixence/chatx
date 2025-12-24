@@ -93,8 +93,8 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: `${baseUrl}/dashboard/settings?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/dashboard/settings?canceled=true`,
+      success_url: `${baseUrl}/settings?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/settings?canceled=true`,
       metadata: {
         userId: user.id,
         plan: plan,

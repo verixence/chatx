@@ -30,6 +30,9 @@ import {
   Youtube,
   File,
   FileText,
+  ArrowLeft,
+  Maximize2,
+  Minimize2,
 } from "lucide-react"
 
 // Dynamically import ReactPlayer
@@ -170,6 +173,13 @@ export default function ContentDetailClient({
   const [selectedText, setSelectedText] = useState("")
   const [selectionPosition, setSelectionPosition] = useState<{ x: number; y: number } | null>(null)
   const [chatInputValue, setChatInputValue] = useState<string | null>(null)
+  const [isFocusMode, setIsFocusMode] = useState(false)
+  const [previousTab, setPreviousTab] = useState<string | null>(null)
+
+  // Track tab changes for smooth transitions
+  useEffect(() => {
+    setPreviousTab(activeTab)
+  }, [activeTab])
 
   // Reset scroll position when switching tabs
   useEffect(() => {
@@ -851,6 +861,21 @@ export default function ContentDetailClient({
       <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         {/* Title Section - Always visible immediately below navbar */}
         <div className="pt-2 sm:pt-3 pb-2 sm:pb-3 space-y-1 sm:space-y-1.5">
+          {/* Navigation Button */}
+          <div className="flex items-center gap-2 mb-2">
+            <Link href="/dashboard">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-600 hover:text-[#EFA07F] hover:bg-[#EFA07F]/10 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                <span className="hidden sm:inline">Back to Dashboard</span>
+                <span className="sm:hidden">Back</span>
+              </Button>
+            </Link>
+          </div>
+          
           <div className="flex items-start gap-2 sm:gap-3 flex-wrap">
             <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-[#1e3a8a] flex-1 min-w-0 break-words leading-tight">
               {contentTitle}
@@ -882,8 +907,11 @@ export default function ContentDetailClient({
           )}
         </div>
 
-        {/* Main grid - content aware layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[50%_50%] gap-0 items-stretch lg:h-[calc(100vh-180px)] xl:h-[calc(100vh-175px)] min-h-[500px] sm:min-h-[600px] md:min-h-[650px] border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm relative mb-3 sm:mb-4 md:mb-6">
+        {/* Main grid - content aware layout with focus mode support */}
+        <div className={cn(
+          "grid gap-0 items-stretch lg:h-[calc(100vh-180px)] xl:h-[calc(100vh-175px)] min-h-[500px] sm:min-h-[600px] md:min-h-[650px] border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm relative mb-3 sm:mb-4 md:mb-6",
+          isFocusMode ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-[50%_50%]"
+        )}>
           {/* Left column */}
           <div className="flex flex-col h-full border-b lg:border-b-0 lg:border-r border-gray-200 bg-[#f9fafb] min-h-[400px] sm:min-h-[450px] md:min-h-[500px]">
             <div
@@ -1027,20 +1055,20 @@ export default function ContentDetailClient({
                       <span>Chat</span>
                     </span>
                   </TabsTrigger>
-                  <TabsTrigger value="summary" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-600 hover:text-[#1e3a8a] data-[state=active]:text-[#1e3a8a] data-[state=active]:bg-blue-50 rounded-lg bg-transparent transition-colors relative">
+                  <TabsTrigger value="summary" className="px-2.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-600 hover:text-[#1e3a8a] data-[state=active]:text-[#1e3a8a] data-[state=active]:bg-blue-50 rounded-lg bg-transparent transition-colors relative min-h-[44px] touch-manipulation">
                     <span className="relative flex items-center gap-1.5 sm:gap-2">
                       {activeTab === "summary" && <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#1e3a8a] rounded-full" />}
                       <span>Summary</span>
                     </span>
                   </TabsTrigger>
-                  <TabsTrigger value="flashcards" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-600 hover:text-[#1e3a8a] data-[state=active]:text-[#1e3a8a] data-[state=active]:bg-blue-50 rounded-lg bg-transparent transition-colors relative">
+                  <TabsTrigger value="flashcards" className="px-2.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-600 hover:text-[#1e3a8a] data-[state=active]:text-[#1e3a8a] data-[state=active]:bg-blue-50 rounded-lg bg-transparent transition-colors relative min-h-[44px] touch-manipulation">
                     <span className="relative flex items-center gap-1.5 sm:gap-2">
                       {activeTab === "flashcards" && <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#1e3a8a] rounded-full" />}
                       <span className="hidden sm:inline">Flashcards</span>
                       <span className="sm:hidden">Cards</span>
                     </span>
                   </TabsTrigger>
-                  <TabsTrigger value="quiz" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-600 hover:text-[#1e3a8a] data-[state=active]:text-[#1e3a8a] data-[state=active]:bg-blue-50 rounded-lg bg-transparent transition-colors relative">
+                  <TabsTrigger value="quiz" className="px-2.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-600 hover:text-[#1e3a8a] data-[state=active]:text-[#1e3a8a] data-[state=active]:bg-blue-50 rounded-lg bg-transparent transition-colors relative min-h-[44px] touch-manipulation">
                     <span className="relative flex items-center gap-1.5 sm:gap-2">
                       {activeTab === "quiz" && <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#1e3a8a] rounded-full" />}
                       <span className="hidden xs:inline">Quizzes</span>
@@ -1048,9 +1076,32 @@ export default function ContentDetailClient({
                     </span>
                   </TabsTrigger>
                 </TabsList>
+                
+                {/* Focus Mode Toggle Button - Desktop only */}
+                <div className="hidden lg:flex items-center gap-2 ml-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsFocusMode(!isFocusMode)}
+                    className="text-gray-600 hover:text-[#EFA07F] hover:bg-[#EFA07F]/10 transition-colors"
+                    title={isFocusMode ? "Exit Focus Mode" : "Enter Focus Mode"}
+                  >
+                    {isFocusMode ? (
+                      <>
+                        <Minimize2 className="h-4 w-4 mr-1.5" />
+                        <span className="hidden sm:inline">Split View</span>
+                      </>
+                    ) : (
+                      <>
+                        <Maximize2 className="h-4 w-4 mr-1.5" />
+                        <span className="hidden sm:inline">Focus Mode</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
 
-              <TabsContent value="chat" className="flex-1 min-h-0 m-0">
+              <TabsContent value="chat" className={cn("flex-1 min-h-0 m-0", previousTab && previousTab !== activeTab && previousTab === "chat" && "tab-content-enter")}>
                 <ChatInterface
                   workspaceId={workspaceId}
                   contentId={content.id}
@@ -1066,7 +1117,7 @@ export default function ContentDetailClient({
                 />
               </TabsContent>
 
-              <TabsContent value="summary" className="flex-1 min-h-0 overflow-y-auto m-0">
+              <TabsContent value="summary" className={cn("flex-1 min-h-0 overflow-y-auto m-0", previousTab && previousTab !== activeTab && previousTab === "summary" && "tab-content-enter")}>
                 <div 
                   ref={summaryScrollRef} 
                   className="h-full overflow-y-auto px-4 py-6 select-text"
@@ -1115,7 +1166,7 @@ export default function ContentDetailClient({
                 </div>
               </TabsContent>
 
-              <TabsContent value="flashcards" className="flex-1 min-h-0 overflow-hidden m-0">
+              <TabsContent value="flashcards" className={cn("flex-1 min-h-0 overflow-hidden m-0", previousTab && previousTab !== activeTab && previousTab === "flashcards" && "tab-content-enter")}>
                 <div ref={flashcardsScrollRef} className="h-full overflow-y-auto">
                   <FlashcardsInterface
                     workspaceId={workspaceId}
@@ -1127,7 +1178,7 @@ export default function ContentDetailClient({
                 </div>
               </TabsContent>
 
-              <TabsContent value="quiz" className="flex-1 min-h-0 overflow-hidden m-0">
+              <TabsContent value="quiz" className={cn("flex-1 min-h-0 overflow-hidden m-0", previousTab && previousTab !== activeTab && previousTab === "quiz" && "tab-content-enter")}>
                 <div ref={quizScrollRef} className="h-full overflow-y-auto">
                   <QuizInterface
                     workspaceId={workspaceId}
@@ -1143,10 +1194,10 @@ export default function ContentDetailClient({
         </div>
 
         {/* Floating Ask AI button for mobile */}
-        <div className="lg:hidden fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-20">
+        <div className="lg:hidden fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-20">
           <Button
             onClick={() => setShowChatMobile((prev) => !prev)}
-            className="rounded-full shadow-lg px-4 py-2 sm:px-5 sm:py-2.5 bg-[#1e3a8a] hover:bg-[#1e40af] text-white text-sm sm:text-base font-medium"
+            className="rounded-full shadow-lg px-5 py-3 bg-[#1e3a8a] hover:bg-[#1e40af] text-white text-sm sm:text-base font-medium min-h-[44px] min-w-[44px] touch-manipulation"
           >
             {showChatMobile ? "Close" : "Ask AI"}
           </Button>
