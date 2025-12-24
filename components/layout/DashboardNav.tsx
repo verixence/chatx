@@ -5,14 +5,20 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
-import { LogOut } from "lucide-react"
+import { LogOut, Settings } from "lucide-react"
 import { useState } from "react"
 
 export default function DashboardNav() {
   const pathname = usePathname()
   const { data: session } = useSession()
 
-  const navItems: Array<{ href: string; label: string; icon: any }> = []
+  const navItems: Array<{ href: string; label: string; icon: any }> = [
+    {
+      href: "/dashboard/settings",
+      label: "Settings",
+      icon: Settings,
+    },
+  ]
 
   const [showMobileMenu, setShowMobileMenu] = useState(false)
 

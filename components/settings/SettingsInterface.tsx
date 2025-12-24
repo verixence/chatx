@@ -1,22 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Select } from "@/components/ui/select"
-import { Settings, User, Zap } from "lucide-react"
+import { User } from "lucide-react"
 import SubscriptionManagement from "./SubscriptionManagement"
 
 interface SettingsInterfaceProps {
   user: any
-  searchParams?: { success?: string; canceled?: string; session_id?: string }
+  searchParams?: { success?: string; canceled?: string; session_id?: string; upgrade?: string }
 }
 
 export default function SettingsInterface({ user, searchParams }: SettingsInterfaceProps) {
-  const [aiProvider, setAiProvider] = useState(user?.aiProvider || "openai")
-  const [saving, setSaving] = useState(false)
-
   // Handle Stripe checkout success/cancel messages
   useEffect(() => {
     if (searchParams?.success === 'true') {
@@ -28,27 +23,6 @@ export default function SettingsInterface({ user, searchParams }: SettingsInterf
       window.history.replaceState({}, '', '/dashboard/settings')
     }
   }, [searchParams])
-
-  const handleSave = async () => {
-    setSaving(true)
-    try {
-      const response = await fetch("/api/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ aiProvider }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to save settings")
-      }
-
-      alert("Settings saved successfully!")
-    } catch (error: any) {
-      alert(error.message || "Failed to save settings")
-    } finally {
-      setSaving(false)
-    }
-  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -63,7 +37,7 @@ export default function SettingsInterface({ user, searchParams }: SettingsInterf
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <User className="h-5 w-5" />
-            <span>Account</span>
+            <span>Account Information</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -71,42 +45,29 @@ export default function SettingsInterface({ user, searchParams }: SettingsInterf
             <Label>Email</Label>
             <p className="text-sm text-muted-foreground">{user?.email}</p>
           </div>
+          {user?.name && (
+            <div>
+              <Label>Name</Label>
+              <p className="text-sm text-muted-foreground">{user.name}</p>
+            </div>
+          )}
+          {user?.created_at && (
+            <div>
+              <Label>Member Since</Label>
+              <p className="text-sm text-muted-foreground">
+                {new Date(user.created_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Subscription Management */}
-      <SubscriptionManagement user={user} />
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Zap className="h-5 w-5" />
-            <span>AI Preferences</span>
-          </CardTitle>
-          <CardDescription>
-            Choose your preferred AI provider for content processing
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="aiProvider">AI Provider</Label>
-            <Select
-              id="aiProvider"
-              value={aiProvider}
-              onChange={(e) => setAiProvider(e.target.value)}
-            >
-              <option value="groq">Groq (Llama 3.1) - Primary</option>
-              <option value="openai">OpenAI (GPT-4o) - Fallback</option>
-            </Select>
-            <p className="text-xs text-muted-foreground mt-1">
-              This affects how your content is processed and summarized
-            </p>
-          </div>
-          <Button onClick={handleSave} disabled={saving}>
-            {saving ? "Saving..." : "Save Preferences"}
-          </Button>
-        </CardContent>
-      </Card>
+      <SubscriptionManagement user={user} upgradePlan={searchParams?.upgrade} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -49,16 +49,44 @@ interface SubscriptionInfo {
 
 interface SubscriptionManagementProps {
   user: any
+  upgradePlan?: string // Optional upgrade plan from URL params
 }
 
-export default function SubscriptionManagement({ user }: SubscriptionManagementProps) {
+export default function SubscriptionManagement({ user, upgradePlan }: SubscriptionManagementProps) {
   const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [upgrading, setUpgrading] = useState(false)
+  const subscriptionSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetchSubscriptionInfo()
   }, [])
+
+  // Handle upgrade plan parameter - scroll to subscription section and highlight upgrade
+  useEffect(() => {
+    if (upgradePlan && (upgradePlan === 'pro' || upgradePlan === 'enterprise') && subscriptionSectionRef.current) {
+      // Scroll to subscription section
+      setTimeout(() => {
+        subscriptionSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        // Highlight the upgrade button after a short delay
+        setTimeout(() => {
+          const upgradeButton = subscriptionSectionRef.current?.querySelector(
+            upgradePlan === 'pro' 
+              ? '[data-upgrade-plan="pro"]' 
+              : '[data-upgrade-plan="enterprise"]'
+          ) as HTMLElement
+          if (upgradeButton) {
+            upgradeButton.classList.add('ring-4', 'ring-yellow-400', 'ring-opacity-75')
+            setTimeout(() => {
+              upgradeButton.classList.remove('ring-4', 'ring-yellow-400', 'ring-opacity-75')
+            }, 3000)
+          }
+        }, 500)
+      }, 300)
+      // Clean up URL parameter
+      window.history.replaceState({}, '', '/dashboard/settings')
+    }
+  }, [upgradePlan])
 
   // Send email notification when trial is ending soon (3 days before)
   useEffect(() => {
@@ -168,7 +196,7 @@ export default function SubscriptionManagement({ user }: SubscriptionManagementP
   const usage = subscriptionInfo.usage
 
   return (
-    <div className="space-y-6">
+    <div ref={subscriptionSectionRef} className="space-y-6">
       {/* Current Subscription */}
       <Card>
         <CardHeader>
@@ -403,14 +431,15 @@ export default function SubscriptionManagement({ user }: SubscriptionManagementP
                       <span>Advanced AI features</span>
                     </li>
                   </ul>
-                  <Button
-                    onClick={() => handleUpgrade('pro')}
-                    disabled={upgrading}
-                    className="w-full bg-[#EFA07F] hover:bg-[#EFA07F]/90 text-black"
-                  >
-                    <ArrowUp className="h-4 w-4 mr-2" />
-                    {subscriptionInfo.trial?.isActive ? 'Upgrade to Pro' : 'Upgrade to Pro'}
-                  </Button>
+                      <Button
+                        onClick={() => handleUpgrade('pro')}
+                        disabled={upgrading}
+                        className="w-full bg-[#EFA07F] hover:bg-[#EFA07F]/90 text-black"
+                        data-upgrade-plan="pro"
+                      >
+                        <ArrowUp className="h-4 w-4 mr-2" />
+                        {subscriptionInfo.trial?.isActive ? 'Upgrade to Pro' : 'Upgrade to Pro'}
+                      </Button>
                 </div>
 
                 {/* Enterprise Plan */}
@@ -475,14 +504,15 @@ export default function SubscriptionManagement({ user }: SubscriptionManagementP
                     <span>Advanced analytics</span>
                   </li>
                 </ul>
-                <Button
-                  onClick={() => handleUpgrade('enterprise')}
-                  disabled={upgrading}
-                  variant="outline"
-                  className="w-full"
-                >
-                  Upgrade to Enterprise
-                </Button>
+                      <Button
+                        onClick={() => handleUpgrade('enterprise')}
+                        disabled={upgrading}
+                        variant="outline"
+                        className="w-full"
+                        data-upgrade-plan="enterprise"
+                      >
+                        Upgrade to Enterprise
+                      </Button>
               </div>
             )}
 
