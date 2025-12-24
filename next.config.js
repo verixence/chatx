@@ -14,7 +14,6 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
   // Headers configuration for proper caching behavior
   async headers() {
     return [
