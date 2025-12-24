@@ -60,7 +60,7 @@ export default function SettingsInterface({ user }: SettingsInterfaceProps) {
           <div>
             <Label>Subscription</Label>
             <p className="text-sm font-medium capitalize">{user?.subscription || "Free"}</p>
-            {user?.subscription === "free" && (
+            {user?.subscription === "freemium" && (
               <p className="text-xs text-muted-foreground mt-1">
                 Upgrade to Pro for unlimited features
               </p>

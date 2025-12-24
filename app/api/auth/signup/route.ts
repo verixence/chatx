@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       email,
       name,
       password_hash,
-      subscription: "free",
+      subscription: "freemium",
     })
 
     if (!user) {
