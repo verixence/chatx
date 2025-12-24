@@ -1,0 +1,14 @@
+{
+  "name": "learnchat-asr-service",
+  "private": true,
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.0",
+    "openai": "^4.52.0",
+    "yt-dlp-wrap": "^2.3.12"
+  }
+}
+
+
