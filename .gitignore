@@ -67,3 +67,4 @@ apps/mobile/.metro/
 
 # Design tokens build
 packages/design-tokens/dist/
+apps/web/.next
