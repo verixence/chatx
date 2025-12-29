@@ -19,12 +19,8 @@
     "@types/node": "^20",
     "typescript": "^5"
   },
-  "dependencies": {
-    "@langchain/community": "^1.1.1",
-    "@langchain/core": "^1.1.8",
-    "langchain": "^1.2.3",
-    "pdf-parse": "^1.1.1",
-    "youtube-transcript": "^1.2.1",
-    "yt-dlp-wrap": "^2.3.12"
+  "overrides": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0"
   }
 }
