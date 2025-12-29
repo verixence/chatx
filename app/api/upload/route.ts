@@ -4,6 +4,10 @@ import { authOptions } from "@/lib/auth/config"
 import { supabaseAdmin } from "@/lib/db/supabase"
 import { initializeBucket } from "@/lib/storage/supabase"
 
+// Configure route to accept larger payloads (10MB for PDFs)
+export const runtime = 'nodejs'
+export const maxDuration = 60 // 60 seconds timeout
+
 /**
  * Server-side file upload endpoint
  * Handles PDF uploads to Supabase Storage with proper authentication

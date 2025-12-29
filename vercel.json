@@ -1,0 +1,17 @@
+{
+  "functions": {
+    "app/api/upload/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/ingest/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_API_MAX_BODY_SIZE": "10485760"
+    }
+  }
+}

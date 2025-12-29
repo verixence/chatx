@@ -18,6 +18,7 @@ import LoginScreen from './src/screens/LoginScreen'
 import SignupScreen from './src/screens/SignupScreen'
 import DashboardScreen from './src/screens/DashboardScreen'
 import ContentDetailScreen from './src/screens/ContentDetailScreen'
+import ProcessingScreen from './src/screens/ProcessingScreen'
 import SettingsScreen from './src/screens/SettingsScreen'
 
 import { RootStackParamList } from './src/navigation/types'
@@ -51,6 +52,7 @@ function AppNavigator() {
           // Authenticated screens
           <>
             <Stack.Screen name="Dashboard" component={DashboardScreen} />
+            <Stack.Screen name="Processing" component={ProcessingScreen} />
             <Stack.Screen name="ContentDetail" component={ContentDetailScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
           </>

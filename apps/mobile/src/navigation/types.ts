@@ -11,5 +11,6 @@ export type RootStackParamList = {
   Workspace: { id: string }
   ContentDetail: { workspaceId: string; contentId: string }
   Chat: { workspaceId: string; contentId?: string }
+  Processing: { contentId: string; contentType: 'pdf' | 'youtube' | 'text' }
 }
 

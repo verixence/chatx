@@ -86,10 +86,11 @@ export default function DashboardScreen() {
     setIsRefreshing(false)
   }
 
-  const handleUploadSuccess = () => {
-    fetchData()
+  const handleUploadSuccess = (contentId: string, contentType: 'pdf' | 'youtube' | 'text') => {
     setUploadModalVisible(false)
     setUploadType(undefined)
+    // Navigate to processing screen
+    navigation.navigate('Processing', { contentId, contentType })
   }
 
   const handleOpenUpload = (type: 'pdf' | 'youtube' | 'text') => {

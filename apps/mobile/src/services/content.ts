@@ -64,6 +64,13 @@ export const contentService = {
 
       const file = result.assets[0]
 
+      // Check file size (max 10MB)
+      const maxSizeInBytes = 10 * 1024 * 1024 // 10MB
+      if (file.size && file.size > maxSizeInBytes) {
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2)
+        throw new Error(`File is too large (${sizeInMB}MB). Maximum size is 10MB. Please try a smaller file.`)
+      }
+
       // Create FormData for upload
       const uploadFormData = new FormData()
       uploadFormData.append('file', {

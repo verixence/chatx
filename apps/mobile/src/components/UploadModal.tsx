@@ -17,7 +17,7 @@ interface UploadModalProps {
   visible: boolean
   onClose: () => void
   workspaceId: string
-  onSuccess?: (contentId: string) => void
+  onSuccess?: (contentId: string, contentType: 'pdf' | 'youtube' | 'text') => void
   initialType?: 'pdf' | 'youtube' | 'text'
 }
 
@@ -61,9 +61,8 @@ export default function UploadModal({
       const response = await contentService.uploadPDF(workspaceId, (progress) => {
         setUploadProgress(progress)
       })
-      Alert.alert('Success', 'PDF uploaded successfully! Processing will begin shortly.')
       if (response.contentId) {
-        onSuccess?.(response.contentId)
+        onSuccess?.(response.contentId, 'pdf')
       }
       handleClose()
     } catch (error: any) {
@@ -83,9 +82,8 @@ export default function UploadModal({
     try {
       setIsLoading(true)
       const response = await contentService.ingestYouTube(workspaceId, youtubeUrl)
-      Alert.alert('Success', 'YouTube video added! Processing transcript...')
       if (response.contentId) {
-        onSuccess?.(response.contentId)
+        onSuccess?.(response.contentId, 'youtube')
       }
       handleClose()
     } catch (error: any) {
@@ -104,9 +102,8 @@ export default function UploadModal({
     try {
       setIsLoading(true)
       const response = await contentService.ingestText(workspaceId, textContent, textTitle)
-      Alert.alert('Success', 'Text added successfully!')
       if (response.contentId) {
-        onSuccess?.(response.contentId)
+        onSuccess?.(response.contentId, 'text')
       }
       handleClose()
     } catch (error: any) {

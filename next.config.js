@@ -1,11 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Temporarily disable serverActions to fix route handler issue
-  // experimental: {
-  //   serverActions: {
-  //     bodySizeLimit: '10mb',
-  //   },
-  // },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
   images: {
     domains: ['i.ytimg.com', 'img.youtube.com'],
     formats: ['image/avif', 'image/webp'],

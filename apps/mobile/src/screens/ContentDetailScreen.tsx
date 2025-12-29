@@ -26,6 +26,7 @@ import { useRoute, useNavigation, RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Ionicons } from '@expo/vector-icons'
 import Markdown from 'react-native-markdown-display'
+import { LinearGradient } from 'expo-linear-gradient'
 import { BackgroundImageWrapper } from '../components/BackgroundImage'
 import contentService from '../services/content'
 import { Content } from '../types'
@@ -109,7 +110,16 @@ export default function ContentDetailScreen() {
 
   useEffect(() => {
     fetchContent()
-  }, [contentId])
+
+    // Poll for content status if processing
+    const pollInterval = setInterval(() => {
+      if (content?.status === 'processing') {
+        fetchContent()
+      }
+    }, 3000) // Check every 3 seconds
+
+    return () => clearInterval(pollInterval)
+  }, [contentId, content?.status])
 
   useEffect(() => {
     // Keyboard listeners for better input visibility
@@ -650,8 +660,25 @@ export default function ContentDetailScreen() {
           <ActivityIndicator size="large" color="#FB923C" />
           <Text style={styles.processingTitle}>Processing Content</Text>
           <Text style={styles.processingText}>
-            Your content is being processed. Chat will be available shortly.
+            Your content is being processed. This usually takes 10-30 seconds.
           </Text>
+          <Text style={[styles.processingText, { fontSize: 13, marginTop: 8, opacity: 0.7 }]}>
+            Auto-checking every 3 seconds...
+          </Text>
+          <TouchableOpacity
+            onPress={fetchContent}
+            style={{
+              marginTop: 20,
+              paddingHorizontal: 24,
+              paddingVertical: 12,
+              backgroundColor: '#FB923C',
+              borderRadius: 8
+            }}
+          >
+            <Text style={{ color: 'white', fontWeight: '600' }}>
+              Check Now
+            </Text>
+          </TouchableOpacity>
         </View>
       )
     }
@@ -740,7 +767,10 @@ export default function ContentDetailScreen() {
           <ActivityIndicator size="large" color="#FB923C" />
           <Text style={styles.processingTitle}>Processing Content</Text>
           <Text style={styles.processingText}>
-            Summary will be available once processing is complete.
+            This usually takes 10-30 seconds.
+            </Text>
+            <Text style={[styles.processingText, { fontSize: 13, marginTop: 8, opacity: 0.7 }]}>
+              Auto-checking every 3 seconds...
           </Text>
         </View>
       )
@@ -807,7 +837,10 @@ export default function ContentDetailScreen() {
           <ActivityIndicator size="large" color="#FB923C" />
           <Text style={styles.processingTitle}>Processing Content</Text>
           <Text style={styles.processingText}>
-            Flashcards will be available once processing is complete.
+            This usually takes 10-30 seconds.
+            </Text>
+            <Text style={[styles.processingText, { fontSize: 13, marginTop: 8, opacity: 0.7 }]}>
+              Auto-checking every 3 seconds...
           </Text>
         </View>
       )
@@ -980,7 +1013,10 @@ export default function ContentDetailScreen() {
           <ActivityIndicator size="large" color="#FB923C" />
           <Text style={styles.processingTitle}>Processing Content</Text>
           <Text style={styles.processingText}>
-            Quiz will be available once processing is complete.
+            This usually takes 10-30 seconds.
+            </Text>
+            <Text style={[styles.processingText, { fontSize: 13, marginTop: 8, opacity: 0.7 }]}>
+              Auto-checking every 3 seconds...
           </Text>
         </View>
       )
