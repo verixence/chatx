@@ -25,6 +25,7 @@
       },
       "package": "com.verixence.chatx",
       "versionCode": 1,
+      "targetSdkVersion": 35,
       "permissions": [
         "INTERNET",
         "READ_EXTERNAL_STORAGE",
