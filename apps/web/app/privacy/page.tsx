@@ -48,6 +48,22 @@ export default function PrivacyPolicy() {
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Third-Party Services</h2>
           <p className="text-gray-700 leading-relaxed mb-3">ChatX integrates with the following third-party services:</p>
 
+          <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-6">Payment Processing</h3>
+          <div className="bg-purple-50 border-l-4 border-purple-500 p-6 mb-6">
+            <p className="text-gray-700 leading-relaxed mb-3">
+              <strong>Stripe Payment Processing:</strong> All subscription payments are processed through Stripe, a PCI-DSS compliant payment processor.
+            </p>
+            <ul className="list-disc pl-6 text-gray-700 space-y-2">
+              <li><strong>Mobile App Users:</strong> When you upgrade to Premium in the mobile app, you'll be directed to our web platform where payments are securely processed by Stripe</li>
+              <li><strong>Payment Information:</strong> ChatX does not store your credit card details. All payment information is securely handled by Stripe</li>
+              <li><strong>What We Receive:</strong> We only receive confirmation of your subscription status, not your payment details</li>
+              <li><strong>Stripe's Privacy:</strong> Your payment data is subject to <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Stripe's Privacy Policy</a></li>
+            </ul>
+            <p className="text-gray-700 leading-relaxed mt-4">
+              <strong>Google Play Store:</strong> The Android app does not process payments directly. Subscriptions are managed through our website using Stripe.
+            </p>
+          </div>
+
           <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-6">AI Services</h3>
           <p className="text-gray-700 leading-relaxed">
             We use AI service providers (OpenAI, Groq, or similar) to process your content and generate responses. Your content is sent to these services for processing but is not stored permanently by them.
