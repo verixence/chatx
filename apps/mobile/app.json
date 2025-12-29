@@ -16,7 +16,8 @@
             "minSdkVersion": 23
           }
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "splash": {
       "image": "./assets/splash-icon.png",
