@@ -23,6 +23,7 @@
     "lucide-react": "^0.468.0",
     "next": "14.2.35",
     "next-auth": "^4.24.13",
+    "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^3.11.174",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -32,7 +33,9 @@
     "resend": "^4.0.1",
     "stripe": "^17.3.1",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "youtube-transcript": "^1.2.1",
+    "yt-dlp-wrap": "^2.3.12"
   },
   "devDependencies": {
     "@types/node": "^20",
