@@ -4,10 +4,11 @@
  */
 
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView, Image, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { Ionicons } from '@expo/vector-icons'
 import { BackgroundImageWrapper } from '../components/BackgroundImage'
 import Button from '../components/Button'
 import { useAuth } from '../context/AuthContext'
@@ -21,6 +22,7 @@ export default function LoginScreen() {
   const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
@@ -84,15 +86,27 @@ export default function LoginScreen() {
 
                 <View style={styles.inputContainer}>
                   <Text style={styles.label}>Password</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter your password"
-                    placeholderTextColor={colors.textTertiary}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                    autoCapitalize="none"
-                  />
+                  <View style={styles.passwordContainer}>
+                    <TextInput
+                      style={[styles.input, styles.passwordInput]}
+                      placeholder="Enter your password"
+                      placeholderTextColor={colors.textTertiary}
+                      value={password}
+                      onChangeText={setPassword}
+                      secureTextEntry={!showPassword}
+                      autoCapitalize="none"
+                    />
+                    <TouchableOpacity
+                      onPress={() => setShowPassword(!showPassword)}
+                      style={styles.eyeIcon}
+                    >
+                      <Ionicons
+                        name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                        size={24}
+                        color={colors.textTertiary}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
 
                 <Button
@@ -187,6 +201,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#FFFFFF',
     color: colors.textPrimary,
+  },
+  passwordContainer: {
+    position: 'relative',
+  },
+  passwordInput: {
+    paddingRight: 48,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 12,
+    top: 12,
+    padding: 4,
   },
   button: {
     marginTop: 8,
