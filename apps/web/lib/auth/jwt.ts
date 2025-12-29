@@ -7,7 +7,7 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || 'dev-secret'
 )
 
-export interface JWTPayload {
+export interface CustomJWTPayload {
   userId: string
   email: string
   iat?: number
@@ -30,10 +30,10 @@ export async function generateToken(userId: string, email: string): Promise<stri
 /**
  * Verify and decode a JWT token
  */
-export async function verifyToken(token: string): Promise<JWTPayload | null> {
+export async function verifyToken(token: string): Promise<CustomJWTPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET)
-    return payload as JWTPayload
+    return payload as unknown as CustomJWTPayload
   } catch (error) {
     console.error('JWT verification failed:', error)
     return null

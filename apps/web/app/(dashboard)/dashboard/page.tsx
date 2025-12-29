@@ -11,7 +11,7 @@ export const revalidate = 0
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
-  if (!session) {
+  if (!session || !session.user) {
     redirect("/login")
   }
 
