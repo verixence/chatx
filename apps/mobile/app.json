@@ -36,7 +36,7 @@
         "backgroundColor": "#F9E5DD"
       },
       "package": "com.verixence.chatx",
-      "versionCode": 7,
+      "versionCode": 8,
       "targetSdkVersion": 35,
       "permissions": [
         "INTERNET",
