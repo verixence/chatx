@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.4.0",
+    "@langchain/core": "^0.3.29",
+    "@langchain/openai": "^0.3.17",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
     "@types/bcryptjs": "^2.4.6",
@@ -17,6 +19,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "jose": "^4.15.9",
+    "langchain": "^0.3.11",
     "lucide-react": "^0.468.0",
     "next": "14.2.35",
     "next-auth": "^4.24.13",

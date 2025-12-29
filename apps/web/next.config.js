@@ -55,8 +55,16 @@ const nextConfig = {
         fs: false,
         path: false,
         crypto: false,
+        canvas: false,
       }
     }
+
+    // Make canvas optional for server builds (pdfjs-dist dependency)
+    if (isServer) {
+      config.externals = config.externals || []
+      config.externals.push('canvas')
+    }
+
     // Optimize bundle size (conservative approach)
     if (!isServer) {
       config.optimization = {
