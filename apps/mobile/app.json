@@ -35,6 +35,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "chatx"
+    "scheme": "chatx",
+    "extra": {
+      "eas": {
+        "projectId": "74335368-bd65-4cf8-8cda-f64b5a56991d"
+      }
+    }
   }
 }
