@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { authenticateRequest } from "@/lib/auth/middleware"
 import { getFlashcardsByWorkspaceId, getFlashcardsByContentId } from "@/lib/db/queries"
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: NextRequest) {
   try {
     const auth = await authenticateRequest(req)

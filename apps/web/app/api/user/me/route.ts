@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAuthenticatedUser } from "@/lib/auth/middleware"
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/user/me
  * Returns the currently authenticated user (works with both JWT and session)
