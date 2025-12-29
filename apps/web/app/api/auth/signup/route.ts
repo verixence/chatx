@@ -2,6 +2,17 @@ import { NextResponse } from "next/server"
 import { getUserByEmail, createUser, hashPassword } from "@/lib/db/queries"
 import { generateToken } from "@/lib/auth/jwt"
 
+// Add CORS headers for mobile app
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+}
+
+export async function OPTIONS(req: Request) {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 export async function POST(req: Request) {
   try {
     // Check environment variables first
@@ -9,7 +20,7 @@ export async function POST(req: Request) {
       console.error("Missing Supabase environment variables")
       return NextResponse.json(
         { error: "Server configuration error. Please contact us at info@verixence.com" },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       )
     }
 
@@ -18,7 +29,7 @@ export async function POST(req: Request) {
     if (!email || !password) {
       return NextResponse.json(
         { error: "Email and password are required" },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       )
     }
 
@@ -30,14 +41,14 @@ export async function POST(req: Request) {
       console.error("Error checking existing user:", err)
       return NextResponse.json(
         { error: "Database error. Please try again." },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       )
     }
 
     if (existingUser) {
       return NextResponse.json(
         { error: "User already exists" },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       )
     }
 
@@ -60,7 +71,7 @@ export async function POST(req: Request) {
           error: "Failed to create user. Please check your database connection and ensure the migration has been run.",
           details: "Check server console for detailed error logs"
         },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       )
     }
 
@@ -78,14 +89,14 @@ export async function POST(req: Request) {
         subscription: user.subscription,
         subscription_status: user.subscription_status,
       }
-    })
+    }, { headers: corsHeaders })
   } catch (error: any) {
     console.error("Signup error:", error)
     console.error("Error details:", error?.message)
     console.error("Error stack:", error?.stack)
     return NextResponse.json(
       { error: error?.message || "Internal server error" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     )
   }
 }
