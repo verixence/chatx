@@ -101,6 +101,43 @@ export default function PrivacyPolicy() {
         </section>
 
         <section className="mb-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Data Deletion Requests</h2>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            You can request deletion of your account and all associated data at any time. We provide two ways to delete your data:
+          </p>
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Option 1: In-App Deletion</h3>
+            <ol className="list-decimal pl-6 text-gray-700 space-y-2">
+              <li>Go to Settings in the ChatX app</li>
+              <li>Scroll to Account Management</li>
+              <li>Tap "Delete Account"</li>
+              <li>Confirm deletion</li>
+            </ol>
+          </div>
+          <div className="bg-green-50 border-l-4 border-green-500 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Option 2: Email Request</h3>
+            <p className="text-gray-700 leading-relaxed mb-3">
+              Send an email to <a href="mailto:info@verixence.com" className="text-blue-600 hover:underline font-semibold">info@verixence.com</a> with the subject line "Data Deletion Request"
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-3">Include in your email:</p>
+            <ul className="list-disc pl-6 text-gray-700 space-y-2">
+              <li>Your registered email address</li>
+              <li>Your account name (if different from email)</li>
+              <li>Confirmation that you want to delete all your data</li>
+            </ul>
+            <p className="text-gray-700 leading-relaxed mt-4">
+              <strong>Response Time:</strong> We will process your deletion request within 30 days and send you a confirmation email once completed.
+            </p>
+          </div>
+          <p className="text-gray-700 leading-relaxed mt-6">
+            <strong>What Gets Deleted:</strong> When you request data deletion, we permanently remove all your personal information, uploaded content, chat histories, quizzes, flashcards, and account details from our systems.
+          </p>
+          <p className="text-gray-700 leading-relaxed mt-4 text-sm italic">
+            Note: Some data may be retained in encrypted backups for up to 30 days as part of our disaster recovery procedures, after which it is permanently deleted.
+          </p>
+        </section>
+
+        <section className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Children's Privacy</h2>
           <p className="text-gray-700 leading-relaxed">
             ChatX is not intended for users under 13 years of age. We do not knowingly collect information from children under 13. If you believe we have collected information from a child, please contact us immediately.
