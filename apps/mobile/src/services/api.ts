@@ -11,6 +11,7 @@ class ApiClient {
   private client: AxiosInstance
 
   constructor() {
+    console.log('[API Client] Initializing with baseURL:', ENV.API_URL)
     this.client = axios.create({
       baseURL: ENV.API_URL,
       timeout: 30000,
@@ -22,19 +23,33 @@ class ApiClient {
     // Request interceptor to add auth token
     this.client.interceptors.request.use(
       async (config) => {
+        console.log('[API Client] Making request:', config.method?.toUpperCase(), config.url)
+        console.log('[API Client] Request data:', config.data)
         const token = await getAuthToken()
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`
         }
         return config
       },
-      (error) => Promise.reject(error)
+      (error) => {
+        console.error('[API Client] Request interceptor error:', error)
+        return Promise.reject(error)
+      }
     )
 
     // Response interceptor for error handling
     this.client.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        console.log('[API Client] Response received:', response.status, response.statusText)
+        return response
+      },
       async (error: AxiosError) => {
+        console.error('[API Client] Response error:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          message: error.message,
+        })
         if (error.response?.status === 401) {
           // Token expired or invalid
           await clearAuthToken()

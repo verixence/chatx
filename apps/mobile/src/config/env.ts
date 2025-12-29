@@ -31,5 +31,12 @@ export const ENV: EnvConfig = {
   STRIPE_PUBLISHABLE_KEY: getEnvVar('EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY'),
 }
 
+// Log environment variables on initialization
+console.log('[ENV] Environment configuration loaded:')
+console.log('[ENV] API_URL:', ENV.API_URL)
+console.log('[ENV] WEB_URL:', ENV.WEB_URL)
+console.log('[ENV] SUPABASE_URL:', ENV.SUPABASE_URL)
+console.log('[ENV] Has SUPABASE_ANON_KEY:', !!ENV.SUPABASE_ANON_KEY)
+
 export const isDevelopment = __DEV__
 export const isProduction = !__DEV__
