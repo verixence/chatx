@@ -13,7 +13,7 @@
           "android": {
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0"
+            "minSdkVersion": 23
           }
         }
       ]
@@ -36,7 +36,7 @@
         "backgroundColor": "#F9E5DD"
       },
       "package": "com.verixence.chatx",
-      "versionCode": 3,
+      "versionCode": 4,
       "targetSdkVersion": 35,
       "permissions": [
         "INTERNET",
