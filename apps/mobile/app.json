@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "ChatX",
+    "slug": "chatx",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F9E5DD"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.verixence.chatx"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#F9E5DD"
+      },
+      "package": "com.verixence.chatx"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "chatx"
+  }
+}

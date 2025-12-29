@@ -46,3 +46,24 @@ next-env.d.ts
 .DS_Store
 Thumbs.db
 
+# Expo
+apps/mobile/.expo/
+apps/mobile/.expo-shared/
+apps/mobile/dist/
+apps/mobile/web-build/
+apps/mobile/node_modules/
+
+# Android
+apps/mobile/android/
+apps/mobile/.gradle/
+apps/mobile/local.properties
+
+# iOS
+apps/mobile/ios/
+apps/mobile/Pods/
+
+# Metro
+apps/mobile/.metro/
+
+# Design tokens build
+packages/design-tokens/dist/

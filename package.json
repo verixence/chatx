@@ -1,66 +1,30 @@
 {
-  "name": "chatx",
+  "name": "chatx-monorepo",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@langchain/anthropic": "^0.3.0",
-    "@langchain/community": "^0.3.0",
-    "@langchain/core": "^0.3.0",
-    "@langchain/openai": "^0.3.0",
-    "@stripe/stripe-js": "^8.6.0",
-    "@supabase/supabase-js": "^2.45.0",
-    "@tanstack/react-query": "^5.56.0",
-    "bcryptjs": "^2.4.3",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "date-fns": "^3.6.0",
-    "framer-motion": "^11.3.0",
-    "jsonwebtoken": "^9.0.3",
-    "langchain": "^0.3.0",
-    "lucide-react": "^0.427.0",
-    "next": "14.2.35",
-    "next-auth": "^4.24.7",
-    "openai": "^4.52.0",
-    "pdf-parse": "^1.1.1",
-    "pdfjs-dist": "^5.4.449",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "react-markdown": "^9.0.1",
-    "react-player": "^2.16.0",
-    "recharts": "^2.12.0",
-    "remark-gfm": "^4.0.0",
-    "resend": "^6.6.0",
-    "stripe": "^20.1.0",
-    "tailwind-merge": "^2.4.0",
-    "youtube-transcript": "^1.2.1",
-    "youtube-transcript-api": "^3.0.6",
-    "yt-dlp-wrap": "^2.3.12",
-    "zod": "^3.23.0",
-    "zustand": "^4.5.0"
+    "dev": "npm run dev --workspace=web",
+    "build": "npm run build --workspace=web",
+    "start": "npm run start --workspace=web",
+    "mobile": "npm run start --workspace=mobile",
+    "mobile:android": "npm run android --workspace=mobile",
+    "mobile:ios": "npm run ios --workspace=mobile",
+    "lint": "npm run lint --workspaces"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20.14.0",
-    "@types/pdf-parse": "^1.1.4",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "autoprefixer": "^10.4.0",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.35",
-    "postcss": "^8.4.0",
-    "tailwindcss": "^3.4.0",
-    "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.5.0"
+    "@types/node": "^20",
+    "typescript": "^5"
   },
-  "overrides": {
-    "eslint-config-next": "14.2.35",
-    "next": "14.2.35"
+  "dependencies": {
+    "@langchain/community": "^1.1.1",
+    "@langchain/core": "^1.1.8",
+    "langchain": "^1.2.3",
+    "pdf-parse": "^1.1.1",
+    "youtube-transcript": "^1.2.1",
+    "yt-dlp-wrap": "^2.3.12"
   }
 }
