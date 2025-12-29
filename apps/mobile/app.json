@@ -17,7 +17,8 @@
           }
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "expo-font"
     ],
     "splash": {
       "image": "./assets/splash-icon.png",
