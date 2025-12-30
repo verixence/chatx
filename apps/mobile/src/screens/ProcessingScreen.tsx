@@ -86,8 +86,10 @@ export default function ProcessingScreen() {
     const checkStatus = async () => {
       try {
         const content = await contentService.getContent(contentId)
+        console.log(`[ProcessingScreen] Content status: ${content.status}`)
 
-        if (content.status === 'complete') {
+        // Content is ready to view - can be 'complete' or 'ready'
+        if (content.status === 'complete' || content.status === 'ready') {
           setStatus('✨ Processing complete!')
           // Wait a moment before navigating
           setTimeout(() => {
@@ -103,9 +105,13 @@ export default function ProcessingScreen() {
           setTimeout(() => {
             navigation.goBack()
           }, 2000)
+        } else {
+          // Unknown status, treat as processing
+          console.warn(`[ProcessingScreen] Unknown status: ${content.status}`)
+          setStatus('Processing your content')
         }
       } catch (error) {
-        console.error('Error checking status:', error)
+        console.error('[ProcessingScreen] Error checking status:', error)
       }
     }
 
