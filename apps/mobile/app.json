@@ -54,7 +54,11 @@
     "extra": {
       "eas": {
         "projectId": "74335368-bd65-4cf8-8cda-f64b5a56991d"
-      }
+      },
+      "EXPO_PUBLIC_API_URL": "https://chatx.verixence.com",
+      "EXPO_PUBLIC_WEB_URL": "https://chatx.verixence.com",
+      "EXPO_PUBLIC_SUPABASE_URL": "https://lcadhutftnaxckcmdzvg.supabase.co",
+      "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjYWRodXRmdG5heGNrY21kenZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzNDA4MzQsImV4cCI6MjA4MTkxNjgzNH0.H7n2J9kBpd7Cl0OypaXCmSrpI6Dm9NrAnSSrloTFaPc"
     }
   }
 }
