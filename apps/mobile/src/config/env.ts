@@ -14,7 +14,19 @@ interface EnvConfig {
 }
 
 function getEnvVar(key: string, defaultValue?: string): string {
-  const value = Constants.expoConfig?.extra?.[key] || process.env[key] || defaultValue
+  // Try multiple sources for environment variables
+  const fromExtra = Constants.expoConfig?.extra?.[key]
+  const fromProcessEnv = process.env[key]
+  const fromExpoPublic = process.env[`EXPO_PUBLIC_${key.replace('EXPO_PUBLIC_', '')}`]
+
+  const value = fromExtra || fromProcessEnv || fromExpoPublic || defaultValue
+
+  console.log(`[getEnvVar] ${key}:`, {
+    fromExtra: !!fromExtra,
+    fromProcessEnv: !!fromProcessEnv,
+    fromExpoPublic: !!fromExpoPublic,
+    finalValue: value?.substring(0, 30) + '...'
+  })
 
   if (!value) {
     console.warn(`Environment variable ${key} is not set`)
