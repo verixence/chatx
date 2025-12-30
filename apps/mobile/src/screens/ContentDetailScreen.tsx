@@ -144,8 +144,9 @@ export default function ContentDetailScreen() {
   }, [])
 
   useEffect(() => {
-    // Load tab data when switching tabs - content is usable when 'ready' or 'complete'
-    if (content?.status === 'complete' || content?.status === 'ready') {
+    // Load tab data when switching tabs - content is usable when 'ready', 'complete', or 'partial'
+    // 'partial' means video has no transcript but metadata is available
+    if (content?.status === 'complete' || content?.status === 'ready' || content?.status === 'partial') {
       switch (activeTab) {
         case 'summary':
           loadSummary()
@@ -166,8 +167,9 @@ export default function ContentDetailScreen() {
       const contentData = await contentService.getContent(contentId)
       setContent(contentData)
 
-      // Load chat history - content is usable when 'ready' or 'complete'
-      if (contentData.status === 'complete' || contentData.status === 'ready') {
+      // Load chat history - content is usable when 'ready', 'complete', or 'partial'
+      // 'partial' means video has no transcript but basic info is available
+      if (contentData.status === 'complete' || contentData.status === 'ready' || contentData.status === 'partial') {
         loadChatHistory(contentData)
       }
     } catch (error) {
@@ -523,7 +525,7 @@ export default function ContentDetailScreen() {
                   </View>
                 </View>
               )}
-              {(content?.status === 'complete' || content?.status === 'ready') && (
+              {(content?.status === 'complete' || content?.status === 'ready' || content?.status === 'partial') && (
                 <View style={styles.metaItem}>
                   <View style={styles.readyDot} />
                   <Text style={styles.readyText}>Ready</Text>
@@ -578,7 +580,7 @@ export default function ContentDetailScreen() {
                 </View>
               </View>
             )}
-            {(content?.status === 'complete' || content?.status === 'ready') && (
+            {(content?.status === 'complete' || content?.status === 'ready' || content?.status === 'partial') && (
               <View style={styles.metaItem}>
                 <View style={styles.readyDot} />
                 <Text style={styles.compactMetaText}>Ready</Text>
@@ -655,7 +657,10 @@ export default function ContentDetailScreen() {
   )
 
   const renderChatTab = () => {
-    if (content?.status !== 'complete') {
+    // Content is usable when 'ready', 'complete', or 'partial'
+    const isContentReady = content?.status === 'complete' || content?.status === 'ready' || content?.status === 'partial'
+
+    if (!isContentReady) {
       return (
         <View style={styles.processingContainer}>
           <ActivityIndicator size="large" color="#FB923C" />
@@ -762,7 +767,10 @@ export default function ContentDetailScreen() {
   }
 
   const renderSummaryTab = () => {
-    if (content?.status !== 'complete') {
+    // Content is usable when 'ready', 'complete', or 'partial'
+    const isContentReady = content?.status === 'complete' || content?.status === 'ready' || content?.status === 'partial'
+
+    if (!isContentReady) {
       return (
         <View style={styles.processingContainer}>
           <ActivityIndicator size="large" color="#FB923C" />
@@ -832,7 +840,10 @@ export default function ContentDetailScreen() {
   }
 
   const renderFlashcardsTab = () => {
-    if (content?.status !== 'complete') {
+    // Content is usable when 'ready', 'complete', or 'partial'
+    const isContentReady = content?.status === 'complete' || content?.status === 'ready' || content?.status === 'partial'
+
+    if (!isContentReady) {
       return (
         <View style={styles.processingContainer}>
           <ActivityIndicator size="large" color="#FB923C" />
@@ -1008,7 +1019,10 @@ export default function ContentDetailScreen() {
   }
 
   const renderQuizzesTab = () => {
-    if (content?.status !== 'complete') {
+    // Content is usable when 'ready', 'complete', or 'partial'
+    const isContentReady = content?.status === 'complete' || content?.status === 'ready' || content?.status === 'partial'
+
+    if (!isContentReady) {
       return (
         <View style={styles.processingContainer}>
           <ActivityIndicator size="large" color="#FB923C" />
