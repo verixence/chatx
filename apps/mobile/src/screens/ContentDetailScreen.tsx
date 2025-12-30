@@ -113,6 +113,7 @@ export default function ContentDetailScreen() {
 
     // Poll for content status if processing
     const pollInterval = setInterval(() => {
+      // Keep polling if status is 'processing' - stop once it's 'ready' or 'complete'
       if (content?.status === 'processing') {
         fetchContent()
       }
@@ -143,8 +144,8 @@ export default function ContentDetailScreen() {
   }, [])
 
   useEffect(() => {
-    // Load tab data when switching tabs
-    if (content?.status === 'complete') {
+    // Load tab data when switching tabs - content is usable when 'ready' or 'complete'
+    if (content?.status === 'complete' || content?.status === 'ready') {
       switch (activeTab) {
         case 'summary':
           loadSummary()
@@ -165,8 +166,8 @@ export default function ContentDetailScreen() {
       const contentData = await contentService.getContent(contentId)
       setContent(contentData)
 
-      // Load chat history
-      if (contentData.status === 'complete') {
+      // Load chat history - content is usable when 'ready' or 'complete'
+      if (contentData.status === 'complete' || contentData.status === 'ready') {
         loadChatHistory(contentData)
       }
     } catch (error) {
@@ -522,7 +523,7 @@ export default function ContentDetailScreen() {
                   </View>
                 </View>
               )}
-              {content?.status === 'complete' && (
+              {(content?.status === 'complete' || content?.status === 'ready') && (
                 <View style={styles.metaItem}>
                   <View style={styles.readyDot} />
                   <Text style={styles.readyText}>Ready</Text>
@@ -577,7 +578,7 @@ export default function ContentDetailScreen() {
                 </View>
               </View>
             )}
-            {content?.status === 'complete' && (
+            {(content?.status === 'complete' || content?.status === 'ready') && (
               <View style={styles.metaItem}>
                 <View style={styles.readyDot} />
                 <Text style={styles.compactMetaText}>Ready</Text>
