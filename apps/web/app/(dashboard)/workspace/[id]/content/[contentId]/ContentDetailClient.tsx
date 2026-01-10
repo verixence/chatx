@@ -470,21 +470,31 @@ export default function ContentDetailClient({
 
   const handleQuizAction = useCallback(() => {
     if (selectedText) {
-      setActiveTab("quiz")
+      // Only switch tabs if not already on quiz tab
+      if (activeTab !== "quiz") {
+        setActiveTab("quiz")
+      }
       // TODO: Could pre-fill quiz generation with selected text context
       setSelectionPosition(null)
       setSelectedText("")
+      // Clear selection highlight
+      window.getSelection()?.removeAllRanges()
     }
-  }, [selectedText])
+  }, [selectedText, activeTab])
 
   const handleFlashcardsAction = useCallback(() => {
     if (selectedText) {
-      setActiveTab("flashcards")
+      // Only switch tabs if not already on flashcards tab
+      if (activeTab !== "flashcards") {
+        setActiveTab("flashcards")
+      }
       // TODO: Could pre-fill flashcard generation with selected text context
       setSelectionPosition(null)
       setSelectedText("")
+      // Clear selection highlight
+      window.getSelection()?.removeAllRanges()
     }
-  }, [selectedText])
+  }, [selectedText, activeTab])
 
   // Clear selection when clicking outside
   useEffect(() => {
@@ -567,6 +577,14 @@ export default function ContentDetailClient({
     // Remove timestamps from summary (don't linkify them)
     return removeTimestamps(summary)
   }, [processedData])
+
+  const filteredQuizzes = useMemo(() => {
+    return quizzes.filter((q) => !q.content_id || q.content_id === content.id)
+  }, [quizzes, content.id])
+
+  const filteredFlashcards = useMemo(() => {
+    return flashcards.filter((f) => !f.content_id || f.content_id === content.id)
+  }, [flashcards, content.id])
 
   const metadata = content.metadata && typeof content.metadata === "object" ? (content.metadata as any) : null
   
@@ -1170,9 +1188,7 @@ export default function ContentDetailClient({
                 <div ref={flashcardsScrollRef} className="h-full overflow-y-auto">
                   <FlashcardsInterface
                     workspaceId={workspaceId}
-                    existingFlashcards={flashcards.filter(
-                      (f) => !f.content_id || f.content_id === content.id
-                    )}
+                    existingFlashcards={filteredFlashcards}
                     contentId={content.id}
                   />
                 </div>
@@ -1181,10 +1197,9 @@ export default function ContentDetailClient({
               <TabsContent value="quiz" className={cn("flex-1 min-h-0 overflow-hidden m-0", previousTab && previousTab !== activeTab && previousTab === "quiz" && "tab-content-enter")}>
                 <div ref={quizScrollRef} className="h-full overflow-y-auto">
                   <QuizInterface
+                    key={`quiz-${content.id}`}
                     workspaceId={workspaceId}
-                    existingQuizzes={quizzes.filter(
-                      (q) => !q.content_id || q.content_id === content.id
-                    )}
+                    existingQuizzes={filteredQuizzes}
                     contentId={content.id}
                   />
                 </div>

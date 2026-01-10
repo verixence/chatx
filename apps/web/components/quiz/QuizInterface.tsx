@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select } from "@/components/ui/select"
@@ -28,12 +28,17 @@ export default function QuizInterface({ workspaceId, existingQuizzes, contentId 
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null)
   const [generating, setGenerating] = useState(false)
   const [taking, setTaking] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [submitted, setSubmitted] = useState(false)
   const [results, setResults] = useState<any[]>([])
   const [score, setScore] = useState<number | null>(null)
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">("medium")
   const [numQuestions, setNumQuestions] = useState(5)
+
+  const handleAnswerChange = useCallback((questionIdx: number, value: string) => {
+    setAnswers((prev) => ({ ...prev, [questionIdx]: value }))
+  }, [])
 
   const handleGenerateQuiz = async () => {
     setGenerating(true)
@@ -73,6 +78,7 @@ export default function QuizInterface({ workspaceId, existingQuizzes, contentId 
 
     const answersArray = selectedQuiz.questions.map((_, idx) => answers[idx] || "")
 
+    setSubmitting(true)
     try {
       const response = await fetch(`/api/quiz/${selectedQuiz.id}`, {
         method: "POST",
@@ -91,6 +97,8 @@ export default function QuizInterface({ workspaceId, existingQuizzes, contentId 
       setSubmitted(true)
     } catch (error: any) {
       alert(error.message || "Failed to submit quiz")
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -193,10 +201,11 @@ export default function QuizInterface({ workspaceId, existingQuizzes, contentId 
               <CardContent>
                 <div className="space-y-2">
                   {question.options?.map((option: string, optIdx: number) => (
-                    <label
+                    <div
                       key={optIdx}
+                      onClick={() => handleAnswerChange(idx, option)}
                       className={cn(
-                        "flex items-center space-x-2 p-3 rounded-md border cursor-pointer hover:bg-accent",
+                        "flex items-center space-x-2 p-3 rounded-md border cursor-pointer hover:bg-accent select-none",
                         answers[idx] === option && "bg-primary/10 border-primary"
                       )}
                     >
@@ -205,11 +214,16 @@ export default function QuizInterface({ workspaceId, existingQuizzes, contentId 
                         name={`question-${idx}`}
                         value={option}
                         checked={answers[idx] === option}
-                        onChange={(e) => setAnswers({ ...answers, [idx]: e.target.value })}
+                        onChange={(e) => {
+                          // Prevent this from firing - we handle it in the div onClick
+                          e.preventDefault()
+                          e.stopPropagation()
+                        }}
                         className="sr-only"
+                        readOnly
                       />
                       <span className="flex-1">{option}</span>
-                    </label>
+                    </div>
                   ))}
                 </div>
               </CardContent>
@@ -218,15 +232,29 @@ export default function QuizInterface({ workspaceId, existingQuizzes, contentId 
         </div>
 
         <div className="flex justify-end space-x-4">
-          <Button variant="outline" onClick={() => {
-            setTaking(false)
-            setSelectedQuiz(null)
-            setAnswers({})
-          }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setTaking(false)
+              setSelectedQuiz(null)
+              setAnswers({})
+            }}
+            disabled={submitting}
+          >
             Cancel
           </Button>
-          <Button onClick={handleSubmitQuiz}>
-            Submit Quiz
+          <Button
+            onClick={handleSubmitQuiz}
+            disabled={submitting}
+          >
+            {submitting ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Grading your quiz...
+              </>
+            ) : (
+              "Submit Quiz"
+            )}
           </Button>
         </div>
       </div>

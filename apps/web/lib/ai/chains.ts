@@ -119,6 +119,8 @@ CRITICAL FORMATTING RULES:
 - Do NOT include comments or trailing commas.
 - Each question MUST have exactly 4 options.
 - The correctAnswer MUST be one of the 4 options (exact match).
+- IMPORTANT: Randomize the position of correct answers - DO NOT place all correct answers in position B or any single position. Mix them naturally across positions A, B, C, and D.
+- Ensure wrong answers (distractors) are plausible but clearly incorrect.
 - Focus only on educational content from the materials provided.
 
 ${getEducationalPromptSuffix()}
@@ -133,22 +135,47 @@ ${getEducationalPromptSuffix()}
   const result = await chain.invoke({})
 
   // Be defensive: the model might still add extra text. Try to extract the first JSON array.
+  let questions
   try {
-    return JSON.parse(result)
+    questions = JSON.parse(result)
   } catch {
     try {
       const start = result.indexOf("[")
       const end = result.lastIndexOf("]")
       if (start !== -1 && end !== -1 && end > start) {
         const candidate = result.slice(start, end + 1)
-        return JSON.parse(candidate)
+        questions = JSON.parse(candidate)
       }
     } catch {
       // fall through
     }
-    console.error("Failed to parse quiz generation JSON. Raw result:", result)
-    return []
+    if (!questions) {
+      console.error("Failed to parse quiz generation JSON. Raw result:", result)
+      return []
+    }
   }
+
+  // Shuffle options for each question to ensure randomness
+  // This prevents AI bias towards placing correct answers in position B
+  return questions.map((q: any) => {
+    if (!q.options || !Array.isArray(q.options)) return q
+
+    // Find which option is the correct answer
+    const correctAnswer = q.correctAnswer
+
+    // Shuffle the options array using Fisher-Yates algorithm
+    const shuffled = [...q.options]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+
+    return {
+      ...q,
+      options: shuffled,
+      correctAnswer: correctAnswer // Keep the same correct answer text
+    }
+  })
 }
 
 export async function createQuizGenerationChain(

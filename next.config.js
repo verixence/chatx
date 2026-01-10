@@ -12,7 +12,7 @@ const nextConfig = {
   // Performance optimizations
   compress: true,
   poweredByHeader: false,
-  reactStrictMode: true,
+  reactStrictMode: false, // Disabled to fix quiz state bug
   // Headers configuration for proper caching behavior
   async headers() {
     return [
